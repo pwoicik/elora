@@ -3,3 +3,4 @@ USER_NAME := halcyon_modules
 
 TAP_DANCE_ENABLE = yes
 CAPS_WORD_ENABLE = yes
+MOUSEKEY_ENABLE = yes
