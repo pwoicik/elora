@@ -28,7 +28,6 @@ If the keyboard has not been merged yet to the main branch of QMK you may need t
             * HLC_CIRQUE_TRACKPAD, If you have a Cirque trackpad installed.
 1. Commit your changes
 
-
 ## Howto build with GitHub
 
 1. In the GitHub Actions tab, enable workflows
@@ -36,7 +35,6 @@ If the keyboard has not been merged yet to the main branch of QMK you may need t
 1. Look at the GitHub Actions for a new actions run
 1. Wait for the actions run to complete
 1. Inspect the Releases tab on your repository for the latest firmware build
-
 
 ## Howto build locally
 
@@ -50,17 +48,20 @@ If the keyboard has not been merged yet to the main branch of QMK you may need t
 
 Alternatively, if you configured your build targets above, you can use `qmk userspace-compile` to build all of your userspace targets at once.
 
+For clangd lsp run `qmk compile -kb splitkb/halcyon/elora/rev2 -km custom -e HLC_CIRQUE_TRACKPAD=1 -e TARGET=elora_trackpad --compiledb`
 
 ## Extra info
 
 If you wish to point GitHub actions to a different repository, a different branch, or even a different keymap name, you can modify `.github/workflows/build_binaries.yml` to suit your needs.
 
 To override the `build` job, you can change the following parameters to use a different QMK repository or branch, this can be useful if you want to use a the main QMK repository or a different vial branch. For example:
+
 ```
     with:
       qmk_repo: qmk/qmk_firmware
       qmk_ref: master
 ```
+
 Our halcyon module code should work fine with the main QMK repository but it may break if there are any breaking changes from QMK in the future. We will try our best to keep this repository up-to-date.
 
 If you wish to manually manage `qmk_firmware` using git within the userspace repository, you can add `qmk_firmware` as a submodule in the userspace directory instead. GitHub Actions will automatically use the submodule at the pinned revision if it exists, otherwise it will use the default latest revision of `qmk_firmware` from the main repository. This will not work when using vial.
@@ -70,7 +71,6 @@ This can also be used to control which fork is used.
 1. (First time only) `git submodule add https://github.com/qmk/qmk_firmware.git`
 1. (To update) `git submodule update --init --recursive`
 1. Commit your changes to your userspace repository
-
 
 ## Adding splitkb fork to an existing fork
 
