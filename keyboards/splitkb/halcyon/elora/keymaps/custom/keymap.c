@@ -28,6 +28,7 @@ enum layers {
 #define HM_G(key) LGUI_T(key)
 #define HM_A(key) LALT_T(key)
 #define SEMI KC_SCLN
+#define TO_DEF TO(DEFAULT)
 
 #define SYM_ENT LT(SYMBOL, KC_ENT)
 
@@ -81,25 +82,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [GAME] = LAYOUT_elora_hlc(
-     KC_ESC,       KC_I,         KC_2,         KC_3,         KC_4,         KC_5,                                                                   TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-     KC_NO,        KC_TAB,       KC_Q,         KC_1,         KC_E,         KC_R,                                                                   TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-     KC_G,         KC_LSFT,      KC_A,         KC_W,         KC_D,         KC_F,                                                                   TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-     KC_B,         KC_LCTL,      KC_Z,         KC_S,         KC_C,         KC_V,         KC_LALT,      KC_ENT,         TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-                                               KC_M,         KC_X,         KC_T,         KC_SPC,       KC_NO,          TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
+     KC_ESC,       KC_I,         KC_2,         KC_3,         KC_4,         KC_5,                                                                   TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,
+     KC_NO,        KC_TAB,       KC_Q,         KC_1,         KC_E,         KC_R,                                                                   TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,
+     KC_G,         KC_LSFT,      KC_A,         KC_W,         KC_D,         KC_F,                                                                   TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,
+     KC_B,         KC_LCTL,      KC_Z,         KC_S,         KC_C,         KC_V,         KC_LALT,      KC_ENT,         TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,
+                                               KC_M,         KC_X,         KC_T,         KC_SPC,       KC_NO,          TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,       TO_DEF,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
     [FUNCTION] = LAYOUT_elora_hlc(
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_F9,        KC_F10,       KC_F11,       KC_F12,       KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
-     TO(DEFAULT),  KC_F5,        KC_F6,        KC_F7,        KC_F8,        KC_NO,                                                                  KC_NO,        KC_LALT,      KC_LGUI,      KC_LSFT,      KC_LCTL,      KC_NO,
+     TO_DEF,       KC_F5,        KC_F6,        KC_F7,        KC_F8,        KC_NO,                                                                  KC_NO,        KC_LALT,      KC_LGUI,      KC_LSFT,      KC_LCTL,      KC_NO,
      KC_NO,        KC_F1,        KC_F2,        KC_F3,        KC_F4,        KC_NO,        KC_NO,        KC_NO,          KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        HT_MAGIC,
                                                KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,          KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
     [MAGIC] = LAYOUT_elora_hlc(
-     TO(DEFAULT),  TO(LOWER),    TO(SYMBOL),   TO_GAME,      TO(FUNCTION), KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     TO_DEF,       TO(LOWER),    TO(SYMBOL),   TO_GAME,      TO(FUNCTION), KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  RM_TOGG,      RM_SATU,      RM_HUEU,      RM_VALU,      RM_NEXT,      KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,          KC_NO,        KC_NO,        KC_NO,        RM_SATD,      RM_HUED,      RM_VALD,      RM_PREV,      HT_MAGIC,
