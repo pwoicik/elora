@@ -1,9 +1,16 @@
 #include "action.h"
 #include "action_layer.h"
+#include "action_tapping.h"
+#include "caps_word.h"
+#include "config.h"
+#include "info_config.h"
+#include "keyboard.h"
 #include "keycodes.h"
-#include "pointing_device.h"
 #include "process_tap_dance.h"
-#include QMK_KEYBOARD_H
+#include "progmem.h"
+#include "quantum.h"
+#include "quantum_keycodes.h"
+#include "timer.h"
 
 enum layers {
     DEFAULT = 0,
@@ -195,6 +202,9 @@ void keyboard_post_init_user(void) {
 }
 
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+#include "pointing_device.h"
+#include "pointing_device_auto_mouse.h"
+
 void pointing_device_init_user(void) {
     set_auto_mouse_layer(MOUSE);
     set_auto_mouse_enable(true);
