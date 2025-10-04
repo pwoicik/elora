@@ -157,16 +157,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         case MO_SSLOW:
-            pointing_device_set_cpi(200);
+            if (record->event.pressed) {
+                pointing_device_set_cpi(200);
+            }
             return false;
         case MO_SMED:
-            pointing_device_set_cpi(400);
+            if (record->event.pressed) {
+                pointing_device_set_cpi(400);
+            }
             return false;
         case MO_SFAST:
-            pointing_device_set_cpi(800);
+            if (record->event.pressed) {
+                pointing_device_set_cpi(800);
+            }
             return false;
         case MO_SBLAZING:
-            pointing_device_set_cpi(1200);
+            if (record->event.pressed) {
+                pointing_device_set_cpi(1200);
+            }
             return false;
     }
     return true;
