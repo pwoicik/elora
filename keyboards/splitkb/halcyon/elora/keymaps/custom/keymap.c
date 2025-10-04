@@ -1,3 +1,5 @@
+#include "action.h"
+#include "action_layer.h"
 #include "keycodes.h"
 #include "pointing_device.h"
 #include "process_tap_dance.h"
@@ -31,6 +33,7 @@ enum custom_keycodes {
     MO_SFAST,
     MO_SBLAZING,
     HT_LOWER,
+    TO_GAME,
 };
 
 enum {
@@ -89,7 +92,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [MAGIC] = LAYOUT_elora_hlc(
-     TO(DEFAULT),  TO(LOWER),    TO(SYMBOL),   TO(GAME),     TO(FUNCTION), KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     TO(DEFAULT),  TO(LOWER),    TO(SYMBOL),   TO_GAME,      TO(FUNCTION), KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  RM_TOGG,      RM_SATU,      RM_HUEU,      RM_VALU,      RM_NEXT,      KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,          KC_NO,        KC_NO,        KC_NO,        RM_SATD,      RM_HUED,      RM_VALD,      RM_PREV,      HT_MAGIC,
@@ -174,6 +177,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case MO_SBLAZING:
             if (record->event.pressed) {
                 pointing_device_set_cpi(1200);
+            }
+            return false;
+
+        case TO_GAME:
+            if (record->event.pressed) {
+                tap_code(KC_F19);
+                layer_move(GAME);
             }
             return false;
     }
