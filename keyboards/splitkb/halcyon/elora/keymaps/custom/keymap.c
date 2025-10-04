@@ -81,11 +81,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [GAME] = LAYOUT_elora_hlc(
-     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-     TO(DEFAULT),  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,          TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
-                                               KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,          TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
+     KC_ESC,       KC_I,         KC_2,         KC_3,         KC_4,         KC_5,                                                                   TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
+     KC_NO,        KC_TAB,       KC_Q,         KC_1,         KC_E,         KC_R,                                                                   TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
+     KC_G,         KC_LSFT,      KC_A,         KC_W,         KC_D,         KC_F,                                                                   TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
+     KC_B,         KC_LCTL,      KC_Z,         KC_S,         KC_C,         KC_V,         KC_LALT,      KC_ENT,         TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
+                                               KC_M,         KC_X,         KC_T,         KC_SPC,       KC_NO,          TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),  TO(DEFAULT),
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
