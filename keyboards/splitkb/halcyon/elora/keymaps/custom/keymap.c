@@ -1,4 +1,6 @@
+#include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 #include "action.h"
 #include "action_layer.h"
 #include "action_tapping.h"
@@ -13,7 +15,10 @@
 #include "progmem.h"
 #include "quantum.h"
 #include "quantum_keycodes.h"
+#include "raw_hid.h"
 #include "timer.h"
+#include "usb_descriptor.h"
+#include "util.h"
 
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #    include "pointing_device_auto_mouse.h"
@@ -29,6 +34,8 @@ enum layers {
     GAME,
     MOUSE,
 };
+
+const char *layer_names[] = {"Default", "Lower", "Symbol", "Function", "Magic", "Game", "Mouse"};
 
 #define HM_C(key) LCTL_T(key)
 #define HM_S(key) LSFT_T(key)
@@ -121,20 +128,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 };
+// clang-format on
 
 bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t *record);
 bool hold_tap_layer(int layer, keyrecord_t *record);
 bool set_trackpad_cpi(uint16_t cpi, keyrecord_t *record);
+bool hid_send_message(char const *message_type, char const *message);
 
 // modifiers that are active until layer is switched back to default
 uint8_t sticky_mods = 0;
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    if (get_highest_layer(state) == DEFAULT) {
+    uint8_t cur_layer = get_highest_layer(state);
+    if (cur_layer == DEFAULT) {
         sticky_mods = 0;
         clear_weak_mods();
         send_keyboard_report();
     }
+    hid_send_message("LAYER", layer_names[cur_layer]);
     return state;
 }
 
@@ -152,14 +163,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case HT_MAGIC:
             return hold_tap_layer(MAGIC, record);
 
-        case MO_SSLOW: return set_trackpad_cpi(200, record);
-        case MO_SMED: return set_trackpad_cpi(400, record);
-        case MO_SFAST: return set_trackpad_cpi(800, record);
-        case MO_SBLAZING: return set_trackpad_cpi(1200, record);
+        case MO_SSLOW:
+            return set_trackpad_cpi(200, record);
+        case MO_SMED:
+            return set_trackpad_cpi(400, record);
+        case MO_SFAST:
+            return set_trackpad_cpi(800, record);
+        case MO_SBLAZING:
+            return set_trackpad_cpi(1200, record);
 
         case TO_GAME:
             if (record->event.pressed) {
-                tap_code(KC_F19);
                 layer_move(GAME);
             }
             return false;
@@ -188,7 +202,7 @@ bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t *record) {
 bool hold_tap_layer(int layer, keyrecord_t *record) {
     static uint16_t timer = 0;
     if (record->event.pressed) {
-        timer = timer_read();
+        timer       = timer_read();
         sticky_mods = get_mods();
         layer_on(layer);
     } else {
@@ -211,10 +225,10 @@ void keyboard_post_init_user(void) {
 }
 
 void pointing_device_init_user(void) {
-    #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-        set_auto_mouse_layer(MOUSE);
-        set_auto_mouse_enable(true);
-    #endif /* ifdef  */
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+    set_auto_mouse_layer(MOUSE);
+    set_auto_mouse_enable(true);
+#endif /* ifdef  */
 }
 
 typedef enum {
@@ -230,7 +244,7 @@ typedef enum {
 } td_state_t;
 
 typedef struct {
-    bool is_press_action;
+    bool       is_press_action;
     td_state_t state;
 } td_tap_t;
 
@@ -264,7 +278,7 @@ td_state_t cur_dance(tap_dance_state_t *state) {
 
 static td_tap_t td_tap_state = {
     .is_press_action = true,
-    .state = TD_NONE,
+    .state           = TD_NONE,
 };
 
 void magic_dance_finished(tap_dance_state_t *state, void *user_data) {
@@ -275,7 +289,8 @@ void magic_dance_finished(tap_dance_state_t *state, void *user_data) {
             layer_on(MAGIC);
             break;
 
-        default: break;
+        default:
+            break;
     }
 }
 
@@ -285,12 +300,45 @@ void magic_dance_reset(tap_dance_state_t *state, void *user_data) {
             layer_off(MAGIC);
             break;
 
-        default: break;
+        default:
+            break;
     }
     td_tap_state.state = TD_NONE;
 }
 
 tap_dance_action_t tap_dance_actions[] = {
-    [HSH_DEF] = ACTION_TAP_DANCE_LAYER_MOVE(KC_HASH, DEFAULT),
+    [HSH_DEF]  = ACTION_TAP_DANCE_LAYER_MOVE(KC_HASH, DEFAULT),
     [TD_MAGIC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, magic_dance_finished, magic_dance_reset),
 };
+
+bool hid_send_message(char const *message_type, char const *message) {
+    static uint8_t buf[RAW_EPSIZE];
+
+    size_t type_len = strlen(message_type);
+    size_t message_len;
+    if (message == NULL) {
+        message_len = 0;
+    } else {
+        message_len = strlen(message);
+    }
+    size_t report_count = CEILING(message_len, RAW_EPSIZE);
+    if (type_len > RAW_EPSIZE - 1) {
+        return false;
+    }
+    if (report_count > 255) {
+        return false;
+    }
+    memset(buf, 0, RAW_EPSIZE);
+    buf[0] = report_count;
+    memcpy(buf + 1, message_type, type_len);
+    raw_hid_send(buf, RAW_EPSIZE);
+
+    for (size_t i = 0; i < report_count; ++i) {
+        memset(buf, 0, RAW_EPSIZE);
+        size_t offset = (i * RAW_EPSIZE);
+        memcpy(buf, message + offset, MIN(message_len - offset, RAW_EPSIZE));
+        raw_hid_send(buf, RAW_EPSIZE);
+    }
+
+    return true;
+}
