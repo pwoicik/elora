@@ -44,17 +44,16 @@ const char *layer_names[] = {"Default", "Lower", "Symbol", "Function", "Magic", 
 #define SEMI KC_SCLN
 #define TO_DEF TO(DEFAULT)
 
-#define SYM_ENT LT(SYMBOL, KC_ENT)
-
 enum custom_keycodes {
     CW_SFT = SAFE_RANGE,
     HT_FUNC,
     HT_MAGIC,
+    HT_LOWER,
+    HT_SYM,
     MO_SSLOW,
     MO_SMED,
     MO_SFAST,
     MO_SBLAZING,
-    HT_LOWER,
     TO_GAME,
 };
 
@@ -70,7 +69,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_TAB,       KC_Q,         KC_W,         KC_E,         KC_R,         KC_T,                                                                   KC_Y,         KC_U,         KC_I,         KC_O,         KC_P,         KC_BSLS,
      KC_ESC,       HM_C(KC_A),   HM_S(KC_S),   HM_G(KC_D),   HM_A(KC_F),   KC_G,                                                                   KC_H,         HM_A(KC_J),   HM_G(KC_K),   HM_S(KC_L),   HM_C(SEMI),   KC_QUOT,
      KC_GRV,       KC_Z,         KC_X,         KC_C,         KC_V,         KC_B,         CW_SFT,       KC_DEL,         HT_FUNC,      CW_SFT,       KC_N,         KC_M,         KC_COMM,      KC_DOT,       KC_SLSH,      TD(TD_MAGIC),
-                                               KC_NO,        HT_FUNC,      HT_LOWER,     KC_SPC,       KC_BSPC,        SYM_ENT,      KC_RALT,      HT_LOWER,     HT_FUNC,      KC_NO,
+                                               KC_NO,        HT_FUNC,      HT_LOWER,     KC_SPC,       KC_BSPC,        HT_SYM ,      KC_RALT,      HT_LOWER,     HT_FUNC,      KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
@@ -132,6 +131,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t *record);
 bool hold_tap_layer(int layer, keyrecord_t *record);
+bool hold_tap_key_layer(uint8_t key, int layer, keyrecord_t *record);
 bool set_trackpad_cpi(uint16_t cpi, keyrecord_t *record);
 bool hid_send_message(char const *message_type, char const *message);
 
@@ -153,6 +153,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case CW_SFT:
             return hold_tap_key_func(KC_LSFT, caps_word_toggle, record);
+
+        case HT_SYM:
+            return hold_tap_key_layer(KC_ENT, SYMBOL, record);
 
         case HT_FUNC:
             return hold_tap_layer(FUNCTION, record);
@@ -188,7 +191,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t *record) {
     static uint16_t timer = 0;
     if (record->event.pressed) {
-        timer = timer_read();
+        timer       = timer_read();
+        sticky_mods = get_mods();
         register_code(key);
     } else {
         unregister_code(key);
@@ -208,6 +212,21 @@ bool hold_tap_layer(int layer, keyrecord_t *record) {
     } else {
         if (timer_elapsed(timer) >= TAPPING_TERM) {
             layer_off(layer);
+        }
+    }
+    return false;
+}
+
+bool hold_tap_key_layer(uint8_t key, int layer, keyrecord_t *record) {
+    static uint16_t timer = 0;
+    if (record->event.pressed) {
+        timer       = timer_read();
+        sticky_mods = get_mods();
+    } else {
+        if (timer_elapsed(timer) < TAPPING_TERM) {
+            tap_code(key);
+        } else {
+            layer_on(layer);
         }
     }
     return false;
