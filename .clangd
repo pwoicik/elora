@@ -1,4 +1,37 @@
 CompileFlags:
-  Add: [-Wno-unknown-attributes, -Wno-maybe-uninitialized, -Wno-unknown-warning-option]
-  Remove: [-W*, -mmcu=*, -mcpu=*, -mfpu=*, -mfloat-abi=*, -mno-unaligned-access, -mno-thumb-interwork, -mcall-prologues, -D__has_include*]
-  Compiler: clang
+  Compiler: "clang"
+  Add: [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wconversion",
+    "-Wunused",
+    "-Wdouble-promotion",
+    "-Wno-unknown-attributes",
+    "-Wno-maybe-uninitialized",
+    "-Wno-unknown-warning-option",
+    "-Wimplicit-fallthrough",
+    "-Wstrict-prototypes",
+    "-Wunreachable-code-aggressive",
+  ]
+  Remove: [
+    "-W*",
+    "-mmcu=*",
+    "-mcpu=*",
+    "-mfpu=*",
+    "-mfloat-abi=*",
+    "-mno-unaligned-access",
+    "-mno-thumb-interwork",
+    "-mcall-prologues",
+    "-D__has_include*",
+  ]
+
+Diagnostics:
+  ClangTidy:
+    Add: [
+      "bugprone-*",
+      "modernize-*",
+      "performance-*",
+      "readability-*",
+    ]
