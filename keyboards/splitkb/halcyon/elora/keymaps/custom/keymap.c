@@ -45,15 +45,11 @@ enum layers {
 
 enum custom_keycodes {
     CW_SFT = SAFE_RANGE,
-    HT_FUNC,
-    HT_MAGIC,
-    HT_LOWER,
     HT_SYM,
     MO_SSLOW,
     MO_SMED,
     MO_SFAST,
     MO_SBLAZING,
-    TO_GAME,
 };
 
 enum {
@@ -67,8 +63,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_EQL,       KC_1,         KC_2,         KC_3,         KC_4,         KC_5,                                                                   KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_MINS,
      KC_TAB,       KC_Q,         KC_W,         KC_E,         KC_R,         KC_T,                                                                   KC_Y,         KC_U,         KC_I,         KC_O,         KC_P,         KC_BSLS,
      KC_ESC,       HM_C(KC_A),   HM_S(KC_S),   HM_G(KC_D),   HM_A(KC_F),   KC_G,                                                                   KC_H,         HM_A(KC_J),   HM_G(KC_K),   HM_S(KC_L),   HM_C(SEMI),   KC_QUOT,
-     KC_GRV,       KC_Z,         KC_X,         KC_C,         KC_V,         KC_B,         CW_SFT,       KC_DEL,         HT_FUNC,      CW_SFT,       KC_N,         KC_M,         KC_COMM,      KC_DOT,       KC_SLSH,      TD(TD_MAGIC),
-                                               KC_NO,        HT_FUNC,      HT_LOWER,     KC_SPC,       KC_BSPC,        HT_SYM ,      KC_RALT,      HT_LOWER,     HT_FUNC,      KC_NO,
+     KC_GRV,       KC_Z,         KC_X,         KC_C,         KC_V,         KC_B,         CW_SFT,       KC_DEL,         MO(FUNCTION), CW_SFT,       KC_N,         KC_M,         KC_COMM,      KC_DOT,       KC_SLSH,      TD(TD_MAGIC),
+                                               KC_NO,        MO(FUNCTION), MO(LOWER),    KC_SPC,       KC_BSPC,        HT_SYM ,      KC_RALT,      MO(LOWER),    MO(FUNCTION), KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
@@ -100,7 +96,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 
     [MAGIC] = LAYOUT_elora_hlc(
-     TO_DEF,       TO(LOWER),    TO(SYMBOL),   TO_GAME,      TO(FUNCTION), KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     TO_DEF,       TO(LOWER),    TO(SYMBOL),   TO(GAME),     TO(FUNCTION), KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                  RM_TOGG,      RM_SATU,      RM_HUEU,      RM_VALU,      RM_NEXT,      KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,          KC_NO,        KC_NO,        KC_NO,        RM_SATD,      RM_HUED,      RM_VALD,      RM_PREV,      TO_DEF,
@@ -157,7 +153,6 @@ typedef struct {
 } key_layer_t;
 
 bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t* record);
-bool hold_tap_layer(uint8_t layer, keyrecord_t* record);
 bool hold_tap_key_layer(key_layer_t key_layer, keyrecord_t* record);
 bool set_trackpad_cpi(cpi_level_t cpi, keyrecord_t* record);
 void send_hid_event(event_t event);
@@ -176,6 +171,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
+bool htkl_interrupted = false;
+
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     // NOLINTNEXTLINE(bugprone-switch-missing-default-case)
     switch (keycode) {
@@ -184,15 +181,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
         case HT_SYM:
             return hold_tap_key_layer((key_layer_t){.key = KC_ENT, .layer = SYMBOL}, record);
-
-        case HT_FUNC:
-            return hold_tap_layer(FUNCTION, record);
-
-        case HT_LOWER:
-            return hold_tap_layer(LOWER, record);
-
-        case HT_MAGIC:
-            return hold_tap_layer(MAGIC, record);
 
         case MO_SSLOW:
             return set_trackpad_cpi(CPI_LEVEL_SLOW, record);
@@ -203,11 +191,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         case MO_SBLAZING:
             return set_trackpad_cpi(CPI_LEVEL_BLAZING, record);
 
-        case TO_GAME:
+        default:
             if (record->event.pressed) {
-                layer_move(GAME);
+                htkl_interrupted = true;
+                if (keycode >= QK_MOMENTARY && keycode <= QK_MOMENTARY_MAX) {
+                    sticky_mods = get_mods();
+                }
             }
-            return false;
     }
 
     if (sticky_mods != 0) {
@@ -219,8 +209,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t* record) {
     static uint16_t timer = 0;
     if (record->event.pressed) {
-        timer       = timer_read();
-        sticky_mods = get_mods();
+        timer = timer_read();
         register_code(key);
     } else {
         unregister_code(key);
@@ -231,29 +220,16 @@ bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t* record) {
     return false;
 }
 
-bool hold_tap_layer(uint8_t layer, keyrecord_t* record) {
-    static uint16_t timer = 0;
-    if (record->event.pressed) {
-        timer       = timer_read();
-        sticky_mods = get_mods();
-        layer_on(layer);
-    } else {
-        if (timer_elapsed(timer) >= TAPPING_TERM) {
-            layer_off(layer);
-        }
-    }
-    return false;
-}
-
 bool hold_tap_key_layer(key_layer_t key_layer, keyrecord_t* record) {
     static uint16_t timer = 0;
     if (record->event.pressed) {
-        timer       = timer_read();
-        sticky_mods = get_mods();
+        timer            = timer_read();
+        htkl_interrupted = false;
+        sticky_mods      = get_mods();
         layer_on(key_layer.layer);
     } else {
         layer_off(key_layer.layer);
-        if (timer_elapsed(timer) < TAPPING_TERM) {
+        if (!htkl_interrupted && timer_elapsed(timer) < TAPPING_TERM) {
             tap_code(key_layer.key);
         }
     }
