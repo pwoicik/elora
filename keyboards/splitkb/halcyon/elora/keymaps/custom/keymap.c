@@ -70,6 +70,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
+    [GALLIUM] = LAYOUT_elora_hlc(
+     KC_EQL,       KC_1,         KC_2,         KC_3,         KC_4,         KC_5,                                                                   KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_MINS,
+     KC_TAB,       KC_B,         KC_L,         KC_D,         KC_C,         KC_V,                                                                   KC_J,         KC_F,         KC_O,         KC_U,         KC_COMMA,     KC_BSLS,
+     KC_ESC,       HM_C(KC_N),   HM_S(KC_Z),   HM_G(KC_T),   HM_A(KC_S),   KC_G,                                                                   KC_Y,         HM_A(KC_H),   HM_G(KC_A),   HM_S(KC_E),   HM_C(KC_I),   KC_SLASH,
+     KC_GRV,       KC_X,         KC_Q,         KC_M,         KC_W,         KC_NO,        CW_SFT,       KC_DEL,         MO(FUNCTION), CW_SFT,       KC_K,         KC_P,         KC_QUOT,      SEMI,         KC_DOT,       TD(TD_MAGIC),
+                                               KC_NO,        MO(FUNCTION), MO(LOWER),    KC_SPC,       KC_BSPC,        HT_SYM ,      MT_ALT_R,     MO(LOWER),    MO(FUNCTION), KC_NO,
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
+    ),
+
     [LOWER] = LAYOUT_elora_hlc(
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_HOME,                                                                KC_LPRN,      KC_NUM,       KC_PEQL,      KC_PSLS,      KC_PAST,      KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_END,                                                                 KC_RPRN,      KC_P7,        KC_P8,        KC_P9,        KC_PMNS,      KC_PSCR,
@@ -123,15 +132,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                                KC_NO,        KC_NO,        MS_BTN2,      MS_BTN1,      MS_BTN3,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
-
-    [GALLIUM] = LAYOUT_elora_hlc(
-     KC_EQL,       KC_1,         KC_2,         KC_3,         KC_4,         KC_5,                                                                   KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_MINS,
-     KC_TAB,       KC_B,         KC_L,         KC_D,         KC_C,         KC_V,                                                                   KC_J,         KC_F,         KC_O,         KC_U,         KC_COMMA,     KC_BSLS,
-     KC_ESC,       HM_C(KC_N),   HM_S(KC_Z),   HM_G(KC_T),   HM_A(KC_S),   KC_G,                                                                   KC_Y,         HM_A(KC_H),   HM_G(KC_A),   HM_S(KC_E),   HM_C(KC_I),   KC_SLASH,
-     KC_GRV,       KC_X,         KC_Q,         KC_M,         KC_W,         KC_NO,        CW_SFT,       KC_DEL,         MO(FUNCTION), CW_SFT,       KC_K,         KC_P,         KC_QUOT,      SEMI,         KC_DOT,       TD(TD_MAGIC),
-                                               KC_NO,        MO(FUNCTION), MO(LOWER),    KC_SPC,       KC_BSPC,        HT_SYM ,      MT_ALT_R,     MO(LOWER),    MO(FUNCTION), KC_NO,
-     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,                                                                                              KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
-    ),
 };
 // clang-format on
 
@@ -173,7 +173,7 @@ uint8_t sticky_mods = 0;
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     uint8_t cur_layer = get_highest_layer(state);
-    if (cur_layer == DEFAULT) {
+    if (cur_layer == get_highest_layer(default_layer_state)) {
         sticky_mods = 0;
         clear_weak_mods();
         send_keyboard_report();
