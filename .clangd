@@ -14,6 +14,7 @@ CompileFlags:
     "-Wimplicit-fallthrough",
     "-Wstrict-prototypes",
     "-Wunreachable-code-aggressive",
+    "-Wno-c2y-extensions",
   ]
   Remove: [
     "-W*",

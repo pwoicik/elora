@@ -13,6 +13,7 @@
 #include "keycodes.h"
 #include "keymap_us.h"
 #include "pointing_device.h"
+#include "process_caps_word.h"
 #include "process_tap_dance.h"
 #include "progmem.h"
 #include "quantum.h"
@@ -180,6 +181,24 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     }
     send_hid_event((event_t){.type = EVENT_TYPE_LAYER_CHANGED, .layer = cur_layer});
     return state;
+}
+
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        case KC_A ... KC_Z:
+            add_weak_mods(MOD_BIT(KC_LSFT));
+            return true;
+
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+        case KC_MINS:
+            return true;
+
+        default:
+            return false;
+    }
 }
 
 bool htkl_interrupted = false;
