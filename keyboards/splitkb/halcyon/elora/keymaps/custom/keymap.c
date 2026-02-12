@@ -42,14 +42,14 @@ enum layers {
 #define HM_S(key) LSFT_T(key)
 #define HM_G(key) LGUI_T(key)
 #define HM_A(key) LALT_T(key)
+#define HT_ALT_R RALT_T(KC_R)
+#define HT_SYM LT(SYMBOL, KC_ENT)
 #define SEMI KC_SCLN
 #define MO_DEF MO(DEFAULT)
 
 enum custom_keycodes {
     TO_DEF = SAFE_RANGE,
     CW_SFT,
-    HT_SYM,
-    HT_ALT_R,
     MO_SSLOW,
     MO_SMED,
     MO_SFAST,
@@ -164,14 +164,7 @@ typedef struct {
     uint8_t layer;
 } key_layer_t;
 
-typedef struct {
-    uint8_t hold_key;
-    uint8_t tap_key;
-} hold_tap_key_key;
-
-bool hold_tap(hold_tap_key_key keys, keyrecord_t* record);
-bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t* record);
-bool hold_tap_key_layer(key_layer_t key_layer, keyrecord_t* record);
+bool cw_sft(keyrecord_t* record);
 bool set_trackpad_cpi(cpi_level_t cpi, keyrecord_t* record);
 void send_hid_event(event_t event);
 
@@ -219,13 +212,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
             return false;
 
         case CW_SFT:
-            return hold_tap_key_func(KC_LSFT, caps_word_toggle, record);
-
-        case HT_SYM:
-            return hold_tap_key_layer((key_layer_t){.key = KC_ENT, .layer = SYMBOL}, record);
-
-        case HT_ALT_R:
-            return hold_tap((hold_tap_key_key){.hold_key = KC_RALT, .tap_key = KC_R}, record);
+            return cw_sft(record);
 
         case MO_SSLOW:
             return set_trackpad_cpi(CPI_LEVEL_SLOW, record);
@@ -250,47 +237,46 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     }
     return true;
 }
-
-bool hold_tap(hold_tap_key_key keys, keyrecord_t* record) {
-    static uint16_t timer = 0;
-    if (record->event.pressed) {
-        timer          = timer_read();
-        ht_interrupted = false;
-        register_code(keys.hold_key);
-    } else {
-        unregister_code(keys.hold_key);
-        if (!ht_interrupted && timer_elapsed(timer) < TAPPING_TERM) {
-            tap_code(keys.tap_key);
-        }
+bool get_permissive_hold(uint16_t keycode, keyrecord_t* record) {
+    (void)record;
+    switch (keycode) {
+        case HT_ALT_R:
+        case HT_SYM:
+            return true;
+        default:
+            return false;
     }
-    return false;
 }
 
-bool hold_tap_key_func(uint8_t key, void (*func)(void), keyrecord_t* record) {
-    static uint16_t timer = 0;
-    if (record->event.pressed) {
-        timer = timer_read();
-        register_code(key);
-    } else {
-        unregister_code(key);
-        if (timer_elapsed(timer) < TAPPING_TERM) {
-            func();
-        }
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t* record) {
+    (void)record;
+    switch (keycode) {
+        default:
+            return false;
     }
-    return false;
 }
 
-bool hold_tap_key_layer(key_layer_t key_layer, keyrecord_t* record) {
+uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
+    (void)record;
+    switch (keycode) {
+        case HT_ALT_R:
+            return 0;
+        default:
+            return QUICK_TAP_TERM;
+    }
+}
+
+bool cw_sft(keyrecord_t* record) {
     static uint16_t timer = 0;
     if (record->event.pressed) {
         timer          = timer_read();
         ht_interrupted = false;
         sticky_mods    = get_mods();
-        layer_on(key_layer.layer);
+        register_code(KC_LSFT);
     } else {
-        layer_off(key_layer.layer);
+        unregister_code(KC_LSFT);
         if (!ht_interrupted && timer_elapsed(timer) < TAPPING_TERM) {
-            tap_code(key_layer.key);
+            caps_word_toggle();
         }
     }
     return false;
