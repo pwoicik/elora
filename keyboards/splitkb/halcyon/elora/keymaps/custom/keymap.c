@@ -12,6 +12,7 @@
 #include "keyboard.h"
 #include "keycodes.h"
 #include "keymap_us.h"
+#include "layers.h"
 #include "pointing_device.h"
 #include "process_caps_word.h"
 #include "process_tap_dance.h"
@@ -25,18 +26,6 @@
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #    include "pointing_device_auto_mouse.h"
 #endif /* ifdef  */
-
-enum layers {
-    DEFAULT = 0,
-    QWERTY,
-
-    LOWER,
-    SYMBOL,
-    FUNCTION,
-    MAGIC,
-    GAME,
-    MOUSE,
-};
 
 #define HM_C(key) LCTL_T(key)
 #define HM_S(key) LSFT_T(key)
