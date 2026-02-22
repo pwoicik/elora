@@ -1,6 +1,5 @@
 #include <stddef.h>
 #include <stdint.h>
-#include <string.h>
 
 #include "action.h"
 #include "action_layer.h"
@@ -8,6 +7,7 @@
 #include "action_util.h"
 #include "caps_word.h"
 #include "config.h"
+#include "hid.h"
 #include "info_config.h"
 #include "keyboard.h"
 #include "keycodes.h"
@@ -19,9 +19,7 @@
 #include "progmem.h"
 #include "quantum.h"
 #include "quantum_keycodes.h"
-#include "raw_hid.h"
 #include "timer.h"
-#include "usb_descriptor.h"
 
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 #    include "pointing_device_auto_mouse.h"
@@ -125,21 +123,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-typedef enum {
-    EVENT_TYPE_LAYER_CHANGED,
-} event_type_t;
-
-typedef struct {
-    event_type_t type;
-    union {
-        uint8_t layer;
-    };
-} event_t;
-
-typedef enum {
-    COMMAND_TYPE_CHANGE_LAYER,
-} command_type_t;
-
 enum {
     CPI_LEVEL_SLOW    = 200,
     CPI_LEVEL_MEDIUM  = 400,
@@ -155,7 +138,6 @@ typedef struct {
 
 bool cw_sft(keyrecord_t* record);
 bool set_trackpad_cpi(cpi_level_t cpi, keyrecord_t* record);
-void send_hid_event(event_t event);
 
 // modifiers that are active until layer is switched back to default
 uint8_t sticky_mods = 0;
@@ -368,33 +350,3 @@ void magic_dance_reset(tap_dance_state_t* state, void* user_data) {
 tap_dance_action_t tap_dance_actions[] = {
     [TD_MAGIC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, magic_dance_finished, magic_dance_reset),
 };
-
-void send_hid_event(event_t event) {
-    static uint8_t buf[RAW_EPSIZE];
-    memset(buf, 0, RAW_EPSIZE);
-    buf[0] = (uint8_t)event.type;
-    switch (event.type) {
-        case EVENT_TYPE_LAYER_CHANGED: {
-            buf[1] = event.layer;
-        } break;
-    }
-    raw_hid_send(buf, RAW_EPSIZE);
-}
-
-// NOLINTNEXTLINE(readability-non-const-parameter)
-void raw_hid_receive(uint8_t* data, uint8_t length) {
-    if (length != RAW_EPSIZE) {
-        return;
-    }
-    command_type_t type = data[0];
-    switch (type) {
-        case COMMAND_TYPE_CHANGE_LAYER: {
-            uint8_t layer = data[1];
-            if (layer == 0) {
-                layer_clear();
-            } else {
-                layer_move(layer);
-            }
-        } break;
-    }
-}

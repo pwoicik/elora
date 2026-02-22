@@ -59,9 +59,10 @@ bool module_post_init_user(void) {
 bool display_module_housekeeping_task_user(bool second_display) {
     (void)second_display;
 
-    static bool first_run_layer = false;
-    static bool first_run_led   = false;
-    static bool first_run_decor = false;
+    static bool     first_run_layer = false;
+    static bool     first_run_led   = false;
+    static bool     first_run_decor = false;
+    static uint32_t last_anim       = 0;
 
     uint16_t layer_y_offset = 10;
     if (m_last_layer_state != layer_state || first_run_layer == false) {
@@ -72,7 +73,7 @@ bool display_module_housekeeping_task_user(bool second_display) {
             lcd_surface,
             0,
             layer_y_offset,
-            LCD_WIDTH,
+            LCD_WIDTH - 1,
             layer_y_offset + retron27->line_height + 1,
             HSV_BLACK,
             true
@@ -179,6 +180,29 @@ bool display_module_housekeeping_task_user(bool second_display) {
 
         m_last_mods_state = mods;
         first_run_led     = true;
+    }
+
+    if (timer_elapsed32(last_anim) > 33) {
+        uint16_t line_padding = 5;
+        uint16_t upper_line_y = layer_y_offset + retron36->line_height + line_padding;
+        uint16_t lower_line_y = mods_y_offset - line_padding;
+
+        // Clear the area between lines
+        qp_rect(lcd_surface, 0, upper_line_y + 1, LCD_WIDTH - 1, lower_line_y - 1, HSV_BLACK, true);
+
+        // Animation logic: a simple bouncing bar
+        static int16_t anim_y = 0;
+        static int8_t  dir    = 1;
+        uint16_t       range  = lower_line_y - upper_line_y - 5;
+
+        anim_y += dir;
+        if (anim_y >= range || anim_y <= 0) {
+            dir *= -1;
+        }
+
+        qp_rect(lcd_surface, 20, upper_line_y + 2 + anim_y, LCD_WIDTH - 21, upper_line_y + 4 + anim_y, 145, 235, 155, true);
+
+        last_anim = timer_read32();
     }
 
     if (!first_run_decor) {

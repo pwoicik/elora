@@ -6,6 +6,8 @@ CAPS_WORD_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 RAW_ENABLE = yes
 
+SRC += hid.c
+
 ifdef HLC_TFT_DISPLAY
 	SRC += display.c
 	SRC += graphics/retron2000_36.qff.c
