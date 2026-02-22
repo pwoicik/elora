@@ -13,17 +13,13 @@
 #include "keycodes.h"
 #include "keymap_us.h"
 #include "layers.h"
-#include "pointing_device.h"
 #include "process_caps_word.h"
 #include "process_tap_dance.h"
 #include "progmem.h"
 #include "quantum.h"
 #include "quantum_keycodes.h"
 #include "timer.h"
-
-#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-#    include "pointing_device_auto_mouse.h"
-#endif /* ifdef  */
+#include "trackpad.h"
 
 #define HM_C(key) LCTL_T(key)
 #define HM_S(key) LSFT_T(key)
@@ -123,21 +119,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-enum {
-    CPI_LEVEL_SLOW    = 200,
-    CPI_LEVEL_MEDIUM  = 400,
-    CPI_LEVEL_FAST    = 800,
-    CPI_LEVEL_BLAZING = 1200,
-};
-typedef uint16_t cpi_level_t;
-
 typedef struct {
     uint8_t key;
     uint8_t layer;
 } key_layer_t;
 
 bool cw_sft(keyrecord_t* record);
-bool set_trackpad_cpi(cpi_level_t cpi, keyrecord_t* record);
 
 // modifiers that are active until layer is switched back to default
 uint8_t sticky_mods = 0;
@@ -208,6 +195,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     }
     return true;
 }
+
 bool get_permissive_hold(uint16_t keycode, keyrecord_t* record) {
     (void)record;
     switch (keycode) {
@@ -253,22 +241,8 @@ bool cw_sft(keyrecord_t* record) {
     return false;
 }
 
-bool set_trackpad_cpi(cpi_level_t cpi, keyrecord_t* record) {
-    if (record->event.pressed) {
-        pointing_device_set_cpi(cpi);
-    }
-    return false;
-}
-
 void keyboard_post_init_user(void) {
-    pointing_device_set_cpi(CPI_LEVEL_FAST);
-}
-
-void pointing_device_init_user(void) {
-#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-    set_auto_mouse_layer(MOUSE);
-    set_auto_mouse_enable(true);
-#endif /* ifdef  */
+    init_trackpad();
 }
 
 typedef enum {

@@ -7,6 +7,7 @@ MOUSEKEY_ENABLE = yes
 RAW_ENABLE = yes
 
 SRC += hid.c
+SRC += trackpad.c
 
 ifdef HLC_TFT_DISPLAY
 	SRC += display.c
