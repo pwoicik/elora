@@ -35,7 +35,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 
     if (record->event.pressed) {
         ht_interrupted = true;
-        if (keycode >= QK_MOMENTARY && keycode <= QK_MOMENTARY_MAX) {
+        if ((keycode >= QK_MOMENTARY && keycode <= QK_MOMENTARY_MAX) ||
+            (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
             sticky_mods = get_mods();
         }
     }
