@@ -1,6 +1,6 @@
 #pragma once
 
-enum layers {
+enum {
     DEFAULT = 0,
     QWERTY,
 

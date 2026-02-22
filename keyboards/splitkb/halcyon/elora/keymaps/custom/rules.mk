@@ -8,6 +8,9 @@ RAW_ENABLE = yes
 
 SRC += hid.c
 SRC += trackpad.c
+SRC += keys.c
+SRC += td_util.c
+SRC += td.c
 
 ifdef HLC_TFT_DISPLAY
 	SRC += display.c

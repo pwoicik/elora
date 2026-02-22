@@ -1,47 +1,30 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "action.h"
 #include "action_layer.h"
-#include "action_tapping.h"
 #include "action_util.h"
-#include "caps_word.h"
-#include "config.h"
 #include "hid.h"
-#include "info_config.h"
-#include "keyboard.h"
-#include "keycodes.h"
-#include "keymap_us.h"
+#include "keys.h"
 #include "layers.h"
-#include "process_caps_word.h"
-#include "process_tap_dance.h"
-#include "progmem.h"
-#include "quantum.h"
-#include "quantum_keycodes.h"
-#include "timer.h"
+#include "td.h"
 #include "trackpad.h"
 
-#define HM_C(key) LCTL_T(key)
-#define HM_S(key) LSFT_T(key)
-#define HM_G(key) LGUI_T(key)
-#define HM_A(key) LALT_T(key)
-#define HT_ALT_R RALT_T(KC_R)
-#define HT_SYM LT(SYMBOL, KC_ENT)
-#define SEMI KC_SCLN
-#define MO_DEF MO(DEFAULT)
+void keyboard_post_init_user(void) {
+    init_trackpad();
+}
 
-enum custom_keycodes {
-    TO_DEF = SAFE_RANGE,
-    CW_SFT,
-    MO_SSLOW,
-    MO_SMED,
-    MO_SFAST,
-    MO_SBLAZING,
-};
+layer_state_t layer_state_set_user(layer_state_t state) {
+    uint8_t cur_layer = get_highest_layer(state);
+    if (cur_layer == get_highest_layer(default_layer_state)) {
+        sticky_mods = 0;
+        clear_weak_mods();
+        send_keyboard_report();
+    }
+    send_hid_event((event_t){.type = EVENT_TYPE_LAYER_CHANGED, .layer = cur_layer});
+    return state;
+}
 
-enum {
-    TD_MAGIC,
-};
+tap_dance_action_t tap_dance_actions[] = {TAP_DANCES};
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -118,209 +101,3 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 };
 // clang-format on
-
-typedef struct {
-    uint8_t key;
-    uint8_t layer;
-} key_layer_t;
-
-bool cw_sft(keyrecord_t* record);
-
-// modifiers that are active until layer is switched back to default
-uint8_t sticky_mods = 0;
-
-layer_state_t layer_state_set_user(layer_state_t state) {
-    uint8_t cur_layer = get_highest_layer(state);
-    if (cur_layer == get_highest_layer(default_layer_state)) {
-        sticky_mods = 0;
-        clear_weak_mods();
-        send_keyboard_report();
-    }
-    send_hid_event((event_t){.type = EVENT_TYPE_LAYER_CHANGED, .layer = cur_layer});
-    return state;
-}
-
-bool caps_word_press_user(uint16_t keycode) {
-    switch (keycode) {
-        case KC_A ... KC_Z:
-            add_weak_mods(MOD_BIT(KC_LSFT));
-            return true;
-
-        case KC_1 ... KC_0:
-        case KC_BSPC:
-        case KC_DEL:
-        case KC_UNDS:
-        case KC_MINS:
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-bool ht_interrupted = false;
-
-bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-    // NOLINTNEXTLINE(bugprone-switch-missing-default-case)
-    switch (keycode) {
-        case TO_DEF:
-            if (record->event.pressed) {
-                layer_clear();
-            }
-            return false;
-
-        case CW_SFT:
-            return cw_sft(record);
-
-        case MO_SSLOW:
-            return set_trackpad_cpi(CPI_LEVEL_SLOW, record);
-        case MO_SMED:
-            return set_trackpad_cpi(CPI_LEVEL_MEDIUM, record);
-        case MO_SFAST:
-            return set_trackpad_cpi(CPI_LEVEL_FAST, record);
-        case MO_SBLAZING:
-            return set_trackpad_cpi(CPI_LEVEL_BLAZING, record);
-
-        default:
-            if (record->event.pressed) {
-                ht_interrupted = true;
-                if (keycode >= QK_MOMENTARY && keycode <= QK_MOMENTARY_MAX) {
-                    sticky_mods = get_mods();
-                }
-            }
-    }
-
-    if (sticky_mods != 0) {
-        set_weak_mods(sticky_mods);
-    }
-    return true;
-}
-
-bool get_permissive_hold(uint16_t keycode, keyrecord_t* record) {
-    (void)record;
-    switch (keycode) {
-        case HT_ALT_R:
-        case HT_SYM:
-            return true;
-        default:
-            return false;
-    }
-}
-
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t* record) {
-    (void)record;
-    switch (keycode) {
-        default:
-            return false;
-    }
-}
-
-uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
-    (void)record;
-    switch (keycode) {
-        case HT_ALT_R:
-            return 0;
-        default:
-            return QUICK_TAP_TERM;
-    }
-}
-
-bool cw_sft(keyrecord_t* record) {
-    static uint16_t timer = 0;
-    if (record->event.pressed) {
-        timer          = timer_read();
-        ht_interrupted = false;
-        sticky_mods    = get_mods();
-        register_code(KC_LSFT);
-    } else {
-        unregister_code(KC_LSFT);
-        if (!ht_interrupted && timer_elapsed(timer) < TAPPING_TERM) {
-            caps_word_toggle();
-        }
-    }
-    return false;
-}
-
-void keyboard_post_init_user(void) {
-    init_trackpad();
-}
-
-typedef enum {
-    TD_NONE,
-    TD_UNKNOWN,
-    TD_SINGLE_TAP,
-    TD_SINGLE_HOLD,
-    TD_DOUBLE_TAP,
-    TD_DOUBLE_HOLD,
-    TD_DOUBLE_SINGLE_TAP, // Send two single taps
-    TD_TRIPLE_TAP,
-    TD_TRIPLE_HOLD
-} td_state_t;
-
-typedef struct {
-    bool       is_press_action;
-    td_state_t state;
-} td_tap_t;
-
-td_state_t cur_dance(tap_dance_state_t* state) {
-    if (state->count == 1) {
-        if (state->interrupted || !state->pressed) {
-            return TD_SINGLE_TAP;
-        }
-        return TD_SINGLE_HOLD;
-    }
-    if (state->count == 2) {
-        if (state->interrupted) {
-            return TD_DOUBLE_SINGLE_TAP;
-        }
-        if (state->pressed) {
-            return TD_DOUBLE_HOLD;
-        }
-        return TD_DOUBLE_TAP;
-    }
-
-    if (state->count == 3) {
-        if (state->interrupted || !state->pressed) {
-            return TD_TRIPLE_TAP;
-        }
-        return TD_TRIPLE_HOLD;
-    }
-    return TD_UNKNOWN;
-}
-
-static td_tap_t td_tap_state = {
-    .is_press_action = true,
-    .state           = TD_NONE,
-};
-
-void magic_dance_finished(tap_dance_state_t* state, void* user_data) {
-    (void)user_data;
-    td_tap_state.state = cur_dance(state);
-    switch (td_tap_state.state) {
-        case TD_SINGLE_HOLD:
-        case TD_DOUBLE_TAP:
-            layer_on(MAGIC);
-            break;
-
-        default:
-            break;
-    }
-}
-
-void magic_dance_reset(tap_dance_state_t* state, void* user_data) {
-    (void)state;
-    (void)user_data;
-    switch (td_tap_state.state) {
-        case TD_SINGLE_HOLD:
-            layer_off(MAGIC);
-            break;
-
-        default:
-            break;
-    }
-    td_tap_state.state = TD_NONE;
-}
-
-tap_dance_action_t tap_dance_actions[] = {
-    [TD_MAGIC] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, magic_dance_finished, magic_dance_reset),
-};
