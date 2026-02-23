@@ -20,6 +20,8 @@ layer_state_t layer_state_set_user(layer_state_t state) {
         sticky_mods = 0;
         clear_weak_mods();
         send_keyboard_report();
+    } else if (sticky_mods != 0) {
+        set_weak_mods(sticky_mods);
     }
     send_hid_event((event_t){.type = EVENT_TYPE_LAYER_CHANGED, .layer = cur_layer});
     return state;

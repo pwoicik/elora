@@ -41,9 +41,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         }
     }
 
-    if (sticky_mods != 0) {
-        set_weak_mods(sticky_mods);
-    }
     return true;
 }
 
