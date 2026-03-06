@@ -1,6 +1,3 @@
-#include <stddef.h>
-#include <stdint.h>
-
 #include "action_layer.h"
 #include "action_util.h"
 #include "hid.h"
@@ -133,7 +130,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_NO,
                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      MO_DEF,       MO_DEF,       KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        TO_DEF,
-     MO_DEF,       MO_DEF,       KC_NO,        KC_NO,        KC_NO
+     KC_ENT,       MO_DEF,       KC_NO,        KC_NO,        KC_NO
     ),
 
     [MOUSE] = ELORA_LAYOUT(
