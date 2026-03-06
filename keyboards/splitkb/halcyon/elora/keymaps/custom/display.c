@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include "caps_word.h"
 #include "color.h"
 #include "graphics/retron2000_36.qff.h"
 #include "hlc_tft_display/config.h"
@@ -17,11 +18,13 @@ painter_device_t lcd_surface;
 
 layer_state_t m_last_layer_state = {0};
 uint8_t       m_last_mods_state  = 0;
+bool          m_last_caps_words  = false;
 
-static const char* mod_ctrl  = "c";
-static const char* mod_shift = "s";
-static const char* mod_alt   = "a";
-static const char* mod_gui   = "g";
+static const char* mod_ctrl       = "c";
+static const char* mod_shift      = "s";
+static const char* mod_caps_words = "w";
+static const char* mod_alt        = "a";
+static const char* mod_gui        = "g";
 
 typedef struct {
     char*    name;
@@ -95,7 +98,8 @@ bool display_module_housekeeping_task_user(bool second_display) {
 
     uint16_t mods_y_offset = LCD_HEIGHT - retron27->line_height - 10;
     uint8_t  mods          = get_mods() | get_oneshot_mods() | get_weak_mods();
-    if (first_run_led == false || m_last_mods_state != mods) {
+    bool     caps_words    = is_caps_word_on();
+    if (first_run_led == false || m_last_mods_state != mods || m_last_caps_words != caps_words) {
         uint16_t x_offset = 12;
         uint16_t spacing  = 30;
 
@@ -114,7 +118,17 @@ bool display_module_housekeeping_task_user(bool second_display) {
                 lcd_surface, x_offset, mods_y_offset, retron27, mod_ctrl, HSV_CAPS_OFF, HSV_BLACK
             );
         }
-        if (mods & MOD_MASK_SHIFT) {
+        if (caps_words) {
+            qp_drawtext_recolor(
+                lcd_surface,
+                x_offset + spacing,
+                mods_y_offset,
+                retron27_underline,
+                mod_caps_words,
+                HSV_GREEN,
+                HSV_BLACK
+            );
+        } else if (mods & MOD_MASK_SHIFT) {
             qp_drawtext_recolor(
                 lcd_surface,
                 x_offset + spacing,
@@ -179,6 +193,7 @@ bool display_module_housekeeping_task_user(bool second_display) {
         }
 
         m_last_mods_state = mods;
+        m_last_caps_words = caps_words;
         first_run_led     = true;
     }
 
@@ -200,7 +215,17 @@ bool display_module_housekeeping_task_user(bool second_display) {
             dir *= -1;
         }
 
-        qp_rect(lcd_surface, 20, upper_line_y + 2 + anim_y, LCD_WIDTH - 21, upper_line_y + 4 + anim_y, 145, 235, 155, true);
+        qp_rect(
+            lcd_surface,
+            20,
+            upper_line_y + 2 + anim_y,
+            LCD_WIDTH - 21,
+            upper_line_y + 4 + anim_y,
+            145,
+            235,
+            155,
+            true
+        );
 
         last_anim = timer_read32();
     }
