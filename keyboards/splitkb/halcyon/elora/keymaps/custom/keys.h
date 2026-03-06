@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 #include "layers.h" // IWYU pragma: keep
 #include "quantum_keycodes.h"
 
@@ -22,3 +24,6 @@ enum {
 };
 
 extern uint8_t sticky_mods;
+extern uint8_t sticky_mods_;
+
+void activate_sticky_mods(void);

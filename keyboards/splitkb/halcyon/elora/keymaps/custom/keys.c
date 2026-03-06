@@ -5,11 +5,16 @@
 #include "caps_word.h"
 #include "trackpad.h"
 
-uint8_t sticky_mods = 0;
+uint8_t sticky_mods  = 0;
+uint8_t sticky_mods_ = 0;
 
 bool ht_interrupted = false;
 
 bool cw_sft(keyrecord_t* record);
+
+void activate_sticky_mods(void) {
+    set_weak_mods(get_weak_mods() | sticky_mods);
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     // NOLINTNEXTLINE(bugprone-switch-missing-default-case)
@@ -37,7 +42,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         ht_interrupted = true;
         if ((keycode >= QK_MOMENTARY && keycode <= QK_MOMENTARY_MAX) ||
             (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
-            sticky_mods = get_mods();
+            sticky_mods_ = get_mods();
+        } else if (sticky_mods != 0) {
+            activate_sticky_mods();
         }
     }
 
