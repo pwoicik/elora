@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      // RIGHT HALF --------------------------------------------------------------------------------------------
                                  KC_F1,        KC_F2,        KC_F3,        KC_F4,        KC_F5,        KC_F6,
                                  KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_NO,
-                                 KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+                                 KC_H,         KC_Y,         KC_N,         KC_O,         KC_L,         KC_NO,
      MO_DEF,       MO_DEF,       KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        TO_DEF,
      KC_ENT,       MO_DEF,       KC_NO,        KC_NO,        KC_NO
     ),
