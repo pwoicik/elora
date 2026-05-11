@@ -7,8 +7,12 @@
 TD_FINISHED_FUNC(magic_dance_finished, {
     switch (td_tap_state.state) {
         case TD_SINGLE_HOLD:
-        case TD_DOUBLE_TAP:
+        case TD_TRIPLE_TAP:
             layer_on(MAGIC);
+            break;
+
+        case TD_DOUBLE_TAP:
+            layer_on(GAME);
             break;
 
         default:
