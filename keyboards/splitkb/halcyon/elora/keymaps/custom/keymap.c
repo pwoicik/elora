@@ -71,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  KC_RPRN,      KC_P7,        KC_P8,        KC_P9,        KC_PMNS,      KC_PSCR,
                                  KC_PERC,      HM_A(KC_P4),  HM_G(KC_P5),  HM_S(KC_P6),  HM_C(KC_PPLS),KC_NO,
      KC_NO,        KC_NO,        KC_COMM,      KC_P1,        KC_P2,        KC_P3,        KC_PENT,      TD(TD_MAGIC),
-     KC_ENT,       KC_NO,        KC_NO,        KC_P0,        KC_PDOT
+     KC_ENT,       KC_NO,        KC_P0,        KC_PDOT,      KC_NO
     ),
 
     [SYMBOL] = ELORA_LAYOUT(
@@ -80,13 +80,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_EXLM,      KC_COMM,      KC_LCBR,      KC_RCBR,      KC_SCLN,      KC_QUES,
      KC_HASH,      KC_CIRC,      KC_EQL,       KC_UNDS,      KC_DOLLAR,    KC_ASTR,
      KC_TILDE,     KC_LT,        KC_PIPE,      KC_MINS,      KC_GT,        KC_SLSH,      KC_BSLS,      KC_AT,
-                                               KC_AMPR,      KC_PLUS,      KC_NO,        KC_PERC,      KC_COLON,
+                                               KC_NO,        KC_AMPR,      KC_PLUS,      KC_PERC,      KC_COLON,
      // RIGHT HALF --------------------------------------------------------------------------------------------
                                  KC_NO,        KC_NUM,       KC_PEQL,      KC_PSLS,      KC_PAST,      KC_NO,
                                  KC_GRAVE,     KC_P7,        KC_P8,        KC_P9,        KC_PMNS,      KC_PSCR,
                                  KC_DQT,       KC_P4,        KC_P5,        KC_P6,        KC_PPLS,      KC_NO,
      KC_NO,        KC_NO,        KC_QUOT,      KC_P1,        KC_P2,        KC_P3,        KC_PENT,      TD(TD_MAGIC),
-     KC_NO,        KC_NO,        KC_NO,        KC_P0,        KC_PDOT
+     KC_NO,        KC_NO,        KC_P0,        KC_PDOT,      KC_NO
     ),
 
     [FUNCTION] = ELORA_LAYOUT(
