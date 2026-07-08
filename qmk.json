@@ -16,6 +16,10 @@
                 "HLC_CIRQUE_TRACKPAD": "1",
                 "TARGET": "elora_trackpad"
             }
+        ],
+        [
+            "totem",
+            "custom"
         ]
     ]
 }

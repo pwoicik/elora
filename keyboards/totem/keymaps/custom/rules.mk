@@ -1,0 +1,6 @@
+DEBOUNCE_TYPE = asym_eager_defer_pk
+
+# TAP_DANCE_ENABLE = yes
+CAPS_WORD_ENABLE = yes
+RAW_ENABLE = yes
+MOUSEKEY_ENABLE = yes
