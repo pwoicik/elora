@@ -1,6 +1,7 @@
 #include "td.h"
 
 #include "action_layer.h"
+#include "keys.h"
 #include "layers.h"
 #include "td_util.h"
 
@@ -12,6 +13,7 @@ TD_FINISHED_FUNC(magic_dance_finished, {
             break;
 
         case TD_DOUBLE_TAP:
+            clear_sticky_mods();
             layer_on(GAME);
             break;
 

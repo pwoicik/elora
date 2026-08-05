@@ -1,6 +1,8 @@
 # This adds module functionality to your keyboard (files found in users/halcyon_modules)
 USER_NAME := halcyon_modules
 
+DEBOUNCE_TYPE = asym_eager_defer_pk
+
 TAP_DANCE_ENABLE = yes
 CAPS_WORD_ENABLE = yes
 MOUSEKEY_ENABLE = yes

@@ -2,7 +2,6 @@
 
 #include "action_layer.h"
 #include "action_util.h"
-#include "caps_word.h"
 #include "trackpad.h"
 
 uint8_t sticky_mods  = 0;
@@ -10,10 +9,13 @@ uint8_t sticky_mods_ = 0;
 
 bool ht_interrupted = false;
 
-bool cw_sft(keyrecord_t* record);
-
 void activate_sticky_mods(void) {
     set_weak_mods(get_weak_mods() | sticky_mods);
+}
+
+void clear_sticky_mods(void) {
+    sticky_mods_ = 0;
+    sticky_mods = 0;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
@@ -24,9 +26,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
                 layer_clear();
             }
             return false;
-
-        case CW_SFT:
-            return cw_sft(record);
 
         case MO_SSLOW:
             return set_trackpad_cpi(CPI_LEVEL_SLOW, record);
@@ -73,7 +72,7 @@ bool get_permissive_hold(uint16_t keycode, keyrecord_t* record) {
     (void)record;
     switch (keycode) {
         case HT_ALT_R:
-        case HT_SYM:
+        case LT_SYM_ENT:
             return true;
         default:
             return false;
@@ -96,20 +95,4 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
         default:
             return QUICK_TAP_TERM;
     }
-}
-
-bool cw_sft(keyrecord_t* record) {
-    static uint16_t timer = 0;
-    if (record->event.pressed) {
-        timer          = timer_read();
-        ht_interrupted = false;
-        sticky_mods    = get_mods();
-        register_code(KC_LSFT);
-    } else {
-        unregister_code(KC_LSFT);
-        if (!ht_interrupted && timer_elapsed(timer) < TAPPING_TERM) {
-            caps_word_toggle();
-        }
-    }
-    return false;
 }

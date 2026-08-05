@@ -35,73 +35,73 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      KC_EQL,       KC_1,         KC_2,         KC_3,         KC_4,         KC_5,
      KC_TAB,       KC_B,         KC_L,         KC_D,         KC_C,         KC_V,
      KC_ESC,       HM_C(KC_N),   HM_S(KC_Z),   HM_G(KC_T),   HM_A(KC_S),   KC_G,
-     KC_GRV,       KC_X,         KC_Q,         KC_M,         KC_W,         KC_NO,        CW_SFT,       KC_DEL,
-                                               KC_NO,        MO(FUNCTION), MO(LOWER),    KC_SPC,       KC_BSPC,
+     KC_GRV,       KC_X,         KC_Q,         KC_M,         KC_W,         CW_TOGG,      KC_NO,        KC_NO,
+                                               KC_NO,        KC_NO,        KC_DEL,       LT_NUM_SPC,   LT_NAV_BSP,
      // RIGHT HALF --------------------------------------------------------------------------------------------
                                  KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_MINS,
-                                 KC_J,         KC_F,         KC_O,         KC_U,         SEMI,         KC_BSLS,
+                                 KC_J,         KC_F,         KC_O,         KC_U,         KC_SCLN,      KC_BSLS,
                                  KC_Y,         HM_A(KC_H),   HM_G(KC_A),   HM_S(KC_E),   HM_C(KC_I),   KC_QUOT,
-     MO(FUNCTION), CW_SFT,       KC_K,         KC_P,         KC_COMM,      KC_DOT,       KC_SLSH,      TD(TD_MAGIC),
-     HT_SYM ,      HT_ALT_R,     MO(LOWER),    MO(FUNCTION), KC_NO
+     KC_NO,        KC_NO,        KC_K,         KC_P,         KC_COMM,      KC_DOT,       KC_SLSH,      TD(TD_MAGIC),
+     LT_SYM_ENT,   HT_ALT_R,     LT_FUN_TAB,   KC_NO,        KC_NO
     ),
 
-    [QWERTY] = ELORA_LAYOUT(
-     // LEFT HALF ---------------------------------------------------------------------------------------------
-     KC_EQL,       KC_1,         KC_2,         KC_3,         KC_4,         KC_5,
-     KC_TAB,       KC_Q,         KC_W,         KC_E,         KC_R,         KC_T,
-     KC_ESC,       HM_C(KC_A),   HM_S(KC_S),   HM_G(KC_D),   HM_A(KC_F),   KC_G,
-     KC_GRV,       KC_Z,         KC_X,         KC_C,         KC_V,         KC_B,         CW_SFT,       KC_DEL,
-                                               KC_NO,        MO(FUNCTION), MO(LOWER),    KC_SPC,       KC_BSPC,
-     // RIGHT HALF --------------------------------------------------------------------------------------------
-                                 KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_MINS,
-                                 KC_Y,         KC_U,         KC_I,         KC_O,         KC_P,         KC_BSLS,
-                                 KC_H,         HM_A(KC_J),   HM_G(KC_K),   HM_S(KC_L),   HM_C(SEMI),   KC_QUOT,
-     MO(FUNCTION), CW_SFT,       KC_N,         KC_M,         KC_COMM,      KC_DOT,       KC_SLSH,      TD(TD_MAGIC),
-     HT_SYM ,      KC_RALT,      MO(LOWER),    MO(FUNCTION), KC_NO
-    ),
-
-    [LOWER] = ELORA_LAYOUT(
+    [NAVIGATION] = ELORA_LAYOUT(
      // LEFT HALF ---------------------------------------------------------------------------------------------
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_HOME,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_END,
-     KC_NO,        KC_NO,        KC_LEFT,      KC_UP,        KC_RIGHT,     KC_PGUP,
-     KC_NO,        KC_NO,        KC_NO,        KC_DOWN,      KC_NO,        KC_PGDN,      KC_NO,        KC_DEL,
-                                               KC_NO,        KC_NO,        KC_NO,        KC_SPC,       KC_BSPC,
+     KC_NO,        KC_LCTL,      KC_LSFT,      KC_LGUI,      KC_LALT,      KC_PGUP,
+     KC_NO,        KC_NO,        KC_NO,        KC_DOWN,      KC_NO,        KC_PGDN,      KC_NO,        KC_NO,
+                                               KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      // RIGHT HALF --------------------------------------------------------------------------------------------
-                                 KC_LPRN,      KC_NUM,       KC_PEQL,      KC_PSLS,      KC_PAST,      KC_NO,
-                                 KC_RPRN,      KC_P7,        KC_P8,        KC_P9,        KC_PMNS,      KC_PSCR,
-                                 KC_PERC,      HM_A(KC_P4),  HM_G(KC_P5),  HM_S(KC_P6),  HM_C(KC_PPLS),KC_NO,
-     KC_NO,        KC_NO,        KC_COMM,      KC_P1,        KC_P2,        KC_P3,        KC_PENT,      TD(TD_MAGIC),
-     KC_ENT,       KC_NO,        KC_P0,        KC_PDOT,      KC_NO
+                                 KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+                                 KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+                                 KC_NO,        KC_LEFT,      KC_DOWN,      KC_UP,        KC_RIGHT,     KC_NO,
+     KC_NO,        KC_NO,        KC_INS,       KC_HOME,      KC_PGDN,      KC_PGUP,      KC_END,       KC_NO,
+     KC_ENT,       KC_BSPC,      KC_DEL,       KC_NO,        KC_NO
+    ),
+
+    [NUMBER] = ELORA_LAYOUT(
+     // LEFT HALF ---------------------------------------------------------------------------------------------
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_HOME,
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_END,
+     KC_NO,        KC_LCTL,      KC_LSFT,      KC_LGUI,      KC_LALT,      KC_PGUP,
+     KC_NO,        KC_NO,        KC_NO,        KC_DOWN,      KC_NO,        KC_PGDN,      KC_NO,        KC_NO,
+                                               KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     // RIGHT HALF --------------------------------------------------------------------------------------------
+                                 KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+                                 KC_LBRC,      KC_7,         KC_8,         KC_9,         KC_RBRC,      KC_NO,
+                                 KC_MINS,      KC_4,         KC_5,         KC_6,         KC_EQL,       KC_NO,
+     KC_NO,        KC_NO,        KC_SCLN,      KC_1,         KC_2,         KC_3,         KC_BSLS,      KC_GRV,
+     KC_COMM,      KC_0,         KC_DOT,       KC_NO,        KC_NO
     ),
 
     [SYMBOL] = ELORA_LAYOUT(
      // LEFT HALF ---------------------------------------------------------------------------------------------
-     KC_GRAVE,     KC_LBRC,      KC_LPRN,      KC_RPRN,      KC_RBRC,      KC_DOT,
-     KC_EXLM,      KC_COMM,      KC_LCBR,      KC_RCBR,      KC_SCLN,      KC_QUES,
-     KC_HASH,      KC_CIRC,      KC_EQL,       KC_UNDS,      KC_DOLLAR,    KC_ASTR,
-     KC_TILDE,     KC_LT,        KC_PIPE,      KC_MINS,      KC_GT,        KC_SLSH,      KC_BSLS,      KC_AT,
-                                               KC_NO,        KC_AMPR,      KC_PLUS,      KC_PERC,      KC_COLON,
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     KC_NO,        KC_LCBR,      KC_LPRN,      KC_RPRN,      KC_RCBR,      KC_EXLM,
+     KC_NO,        KC_CIRC,      KC_AMPR,      KC_PERC,      KC_DLR,       KC_PLUS,
+     KC_BSLS,      KC_LT,        KC_PIPE,      KC_MINS,      KC_GT,        KC_ASTR,      KC_NO,        KC_NO,
+                                               KC_NO,        KC_NO,        KC_TILD,      KC_EQL,       KC_UNDS,
      // RIGHT HALF --------------------------------------------------------------------------------------------
-                                 KC_NO,        KC_NUM,       KC_PEQL,      KC_PSLS,      KC_PAST,      KC_NO,
-                                 KC_GRAVE,     KC_P7,        KC_P8,        KC_P9,        KC_PMNS,      KC_PSCR,
-                                 KC_DQT,       KC_P4,        KC_P5,        KC_P6,        KC_PPLS,      KC_NO,
-     KC_NO,        KC_NO,        KC_QUOT,      KC_P1,        KC_P2,        KC_P3,        KC_PENT,      TD(TD_MAGIC),
-     KC_NO,        KC_NO,        KC_P0,        KC_PDOT,      KC_NO
+                                 KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+                                 KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+                                 KC_GRV,       KC_LALT,      KC_LGUI,      KC_LSFT,      KC_LCTL,      KC_NO,
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
     [FUNCTION] = ELORA_LAYOUT(
      // LEFT HALF ---------------------------------------------------------------------------------------------
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
-     KC_NO,        KC_F9,        KC_F10,       KC_F11,       KC_F12,       KC_NO,
-     TO_DEF,       KC_F5,        KC_F6,        KC_F7,        KC_F8,        KC_NO,
-     KC_NO,        KC_F1,        KC_F2,        KC_F3,        KC_F4,        KC_NO,        KC_NO,        KC_NO,
-                                               KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
+     KC_NO,        KC_F12,       KC_F7,        KC_F8,        KC_F9,        KC_PSCR,
+     KC_NO,        KC_F11,       KC_F4,        KC_F5,        KC_F6,        KC_PAUSE,
+     KC_NO,        KC_F10,       KC_F1,        KC_F2,        KC_F3,        KC_NO,        KC_NO,        KC_NO,
+                                               KC_NO,        KC_NO,        KC_NO,        KC_TAB,       KC_SPC,
      // RIGHT HALF --------------------------------------------------------------------------------------------
                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
                                  KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
-                                 KC_NO,        KC_LALT,      KC_LGUI,      KC_LSFT,      KC_LCTL,      KC_NO,
-     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        TD(TD_MAGIC),
+                                 KC_GRV,       KC_LALT,      KC_LGUI,      KC_LSFT,      KC_LCTL,      KC_NO,
+     KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO
     ),
 
@@ -109,7 +109,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      // LEFT HALF ---------------------------------------------------------------------------------------------
      KC_NO,        KC_NO,        KC_NO,        TO(GAME),     KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
-     KC_NO,        DF(DEFAULT),  DF(QWERTY),   KC_NO,        KC_NO,        KC_NO,
+     KC_NO,        DF(DEFAULT),  KC_NO,        KC_NO,        KC_NO,        KC_NO,
      KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
                                                KC_NO,        KC_NO,        KC_NO,        KC_NO,        KC_NO,
      // RIGHT HALF --------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                  KC_6,         KC_7,         KC_8,         KC_9,         KC_0,         KC_NO,
                                  KC_H,         KC_LEFT,      KC_UP,        KC_RIGHT,     KC_L,         KC_NO,
      KC_NO,        KC_NO,        KC_Y,         KC_PGDN,      KC_DOWN,      KC_PGUP,      KC_NO,        TO_DEF,
-     KC_ENT,       KC_NO,        KC_N,         KC_O,         KC_NO
+     KC_ENT,       KC_NO,        KC_N,         KC_O,         KC_P
     ),
 
     [MOUSE] = ELORA_LAYOUT(

@@ -2,9 +2,9 @@
 
 enum {
     DEFAULT = 0,
-    QWERTY,
 
-    LOWER,
+    NAVIGATION,
+    NUMBER,
     SYMBOL,
     FUNCTION,
     MAGIC,

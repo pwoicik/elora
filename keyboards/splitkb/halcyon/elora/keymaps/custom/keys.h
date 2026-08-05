@@ -10,13 +10,14 @@
 #define HM_G(key) LGUI_T(key)
 #define HM_A(key) LALT_T(key)
 #define HT_ALT_R RALT_T(KC_R)
-#define HT_SYM LT(SYMBOL, KC_ENT)
-#define SEMI KC_SCLN
-#define MO_DEF MO(DEFAULT)
+
+#define LT_SYM_ENT LT(SYMBOL, KC_ENT)
+#define LT_NAV_BSP LT(NAVIGATION, KC_BSPC)
+#define LT_NUM_SPC LT(NUMBER, KC_SPC)
+#define LT_FUN_TAB LT(FUNCTION, KC_TAB)
 
 enum {
     TO_DEF = SAFE_RANGE,
-    CW_SFT,
     MO_SSLOW,
     MO_SMED,
     MO_SFAST,
@@ -27,3 +28,4 @@ extern uint8_t sticky_mods;
 extern uint8_t sticky_mods_;
 
 void activate_sticky_mods(void);
+void clear_sticky_mods(void);
